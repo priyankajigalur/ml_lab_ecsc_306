@@ -1,0 +1,82 @@
+USN : 01FE15BCS144
+Username : priyankajigalur
+Batch : C1
+
+LAB_1_ASSIGNMENT_2:
+PART 1
+
+#Read 2 arrays x,y containing floating point value
+import tensorflow as tf
+
+sess = tf.Session()
+
+a=tf.constant([1,5,6,3,5,6,8,4.0])
+b=tf.constant([3,6,7,8,9.0,5,6,4])
+
+#mean of x and y
+x=tf.reduce_mean(a)
+y=tf.reduce_mean(b)
+
+#varience of x
+v_x= tf.add(a,-x)
+#y=tf.multiply(x,x)
+sess.run(v_x)
+
+v_x1=tf.multiply(v_x,v_x)
+sess.run(v_x1)
+
+g=tf.reduce_sum(v_x1)
+g=tf.to_float(g)
+sess.run(g)
+
+i=tf.count_nonzero(a)
+i=tf.to_float(i)
+sess.run(i+1)
+
+
+variance=tf.div(g,i)
+sess.run(variance)
+            
+#covariance = sum((x(i) - mean(x)) * (y(i) - mean(y)))         
+j=tf.subtract(b,y)
+k=tf.multiply(v_x,j)
+covariance=tf.reduce_sum(k)
+sess.run(covariance)
+            
+#m=covariance(x,y)/variance(x)         
+m = tf.div(covariance,variance)
+sess.run(m)
+
+# c=mean(y)-m*mean(x)
+c=tf.subtract(y,tf.multiply(m,x))
+sess.run(c)
+
+# y = mx+c
+slope=tf.add(tf.multiply(m,b),c)
+sess.run(slope)
+    
+
+print("Mean of x: ",sess.run(x))
+print("Mean of y: ",sess.run(y))
+print("Variance of x: ",sess.run(variance))
+print("covariance(x,y): ",sess.run(covariance))
+print("Value of m: ",sess.run(m))
+print("Value of c: ",sess.run(c))
+print("Value of y1: ",sess.run(slope))
+
+    
+PART 2:
+import matplotlib.pyplot  as plt
+
+print("Value of y: ",sess.run(b))
+print("Value of y1: ",sess.run(slope))
+plt.plot(sess.run(b),sess.run(slope))
+plt.axis([0,6,0,5])
+plt.show()
+
+
+#root_mean_sqr_err = sqrt(mean((y-y_pred).^2))
+
+root_mean_sqr_err = tf.reduce_sum(tf.pow(slope-b, 2))/(len(sess.run(a)))
+root_mean_sqr_err = tf.sqrt(root_mean_sqr_err)           
+print("Root mean square error:",sess.run(root_mean_sqr_err))
